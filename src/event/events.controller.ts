@@ -8,7 +8,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  // Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,8 +18,8 @@ import { EventDto } from './dto/events.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { EventFilterDto } from './dto/filter.dto';
 import { Event } from './entities/event.entity';
-import { Ticket } from '../ticket/entities/ticket.entity';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { UpdateEventDto } from './dto/updateEvent.dto';
 
 @Controller('event')
 @UseGuards(AuthGuard())
@@ -47,7 +46,7 @@ export class EventsController {
     return this.eventService.findAll(filterDto, user);
   }
   //Pagination by Event list
-  @Get('/:paginated')
+  @Get('')
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
@@ -58,14 +57,14 @@ export class EventsController {
       limit,
     });
   }
-  @Get('/:id')
-  getTicketByEvent(
-    @Param('id') event_name: string,
-    @GetUser() user: User,
-    ticket: Ticket,
-  ): Promise<Event> {
-    return this.eventService.getTicketByEvent(event_name, user, ticket);
-  }
+  // @Get('/:id')
+  // getTicketByEvent(
+  //   @Param('id') event_name: string,
+  //   @GetUser() user: User,
+  //   ticket: Ticket,
+  // ): Promise<Event> {
+  //   return this.eventService.getTicketByEvent(event_name, user, ticket);
+  // }
   @Get('/:id')
   getEventById(@Param('id') id: string, @GetUser() user: User): Promise<Event> {
     return this.eventService.getEventById(id, user);
@@ -74,10 +73,10 @@ export class EventsController {
   @Patch('/:id')
   updateEvent(
     @Param('id') id: string,
-    @Body() eventDto: EventDto,
+    @Body() updateEventDto: UpdateEventDto,
     @GetUser() user: User,
   ): Promise<Event> {
-    const { event_name } = eventDto;
+    const { event_name } = updateEventDto;
     return this.eventService.updateEvent(id, event_name, user);
   }
   @Delete('/:id')

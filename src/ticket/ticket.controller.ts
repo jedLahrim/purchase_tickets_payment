@@ -1,15 +1,17 @@
 import {
   Body,
-  Controller, DefaultValuePipe,
+  Controller,
+  DefaultValuePipe,
   Delete,
   Get,
-  Param, ParseIntPipe,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   // Put,
   Query,
-  UseGuards
-} from "@nestjs/common";
+  UseGuards,
+} from '@nestjs/common';
 import { TicketDto } from './dto/ticket.dto';
 import { User } from '../auth/entities/user.entity';
 import { Ticket } from './entities/ticket.entity';
@@ -19,7 +21,8 @@ import { TicketFilterDto } from './dto/filter.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetEvent } from '../event/Getevent.Decorator';
 import { Event } from '../event/entities/event.entity';
-import { Pagination } from "nestjs-typeorm-paginate";
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { UpdateTicketDto } from './dto/updateTicket.dto';
 
 @Controller('ticket')
 @UseGuards(AuthGuard())
@@ -49,7 +52,7 @@ export class TicketController {
   ): Promise<Ticket> {
     return this.ticketService.getTicketById(id, user);
   }
-  @Get('/:paginate')
+  @Get('')
   async index_ticket(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
@@ -60,18 +63,18 @@ export class TicketController {
       limit,
     });
   }
-  @Patch('/:id/ticket_name')
+  @Patch('/:id')
   updateTask(
     @Param('id') id: string,
-    @Body() ticketDto: TicketDto,
+    @Body() updateTicketDto: UpdateTicketDto,
     @GetUser() user: User,
   ): Promise<Ticket> {
-    const { ticket_name } = ticketDto;
+    const { ticket_name } = updateTicketDto;
     return this.ticketService.updateTicket(id, ticket_name, user);
   }
 
   @Delete('/:id')
   deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
-    return this.ticketService.deleteTicket(id,user);
+    return this.ticketService.deleteTicket(id, user);
   }
 }

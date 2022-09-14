@@ -9,7 +9,6 @@ import { Event } from './entities/event.entity';
 import { EventDto } from './dto/events.dto';
 import { User } from '../auth/entities/user.entity';
 import { EventFilterDto } from './dto/filter.dto';
-import { Ticket } from '../ticket/entities/ticket.entity';
 import {
   IPaginationOptions,
   paginate,
@@ -20,8 +19,7 @@ import {
 export class EventsService {
   constructor(
     @InjectRepository(Event)
-    private eventRepo: Repository<Event>,
-    // private jwtService: JwtService,
+    private eventRepo: Repository<Event>, // private jwtService: JwtService,
   ) {}
 
   async createEvent(eventDto: EventDto, user: User): Promise<Event> {
@@ -85,21 +83,21 @@ export class EventsService {
     return paginate<Event>(queryBuilder, options);
   }
 
-  async getTicketByEvent(
-    event_name: string,
-    user: User | any,
-    ticket: Ticket | any,
-  ): Promise<Event> {
-    const found = await this.eventRepo.findOne({
-      where: { event_name, user, ticket },
-    });
-    if (!found) {
-      throw new NotFoundException(
-        `Ticket with event name "${event_name}" not found`,
-      );
-    }
-    return found;
-  }
+  // async getTicketByEvent(
+  //   event_name: string,
+  //   user: User | any,
+  //   ticket: Ticket | any,
+  // ): Promise<Event> {
+  //   const found = await this.eventRepo.findOne({
+  //     where: { event_name, user, ticket },
+  //   });
+  //   if (!found) {
+  //     throw new NotFoundException(
+  //       `Ticket with event name "${event_name}" not found`,
+  //     );
+  //   }
+  //   return found;
+  // }
   async getEventById(id: string, user: User | any): Promise<Event> {
     const found = await this.eventRepo.findOne({ where: { id, user } });
     if (!found) {
